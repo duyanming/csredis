@@ -12,13 +12,13 @@ CSRedis于2016年开始支持.NETCore一直迭代至今（解决上述Bug），�
 
 2、CSRedisClient 增加反序列对象获取，如：Get<byte[]>、HGet<byte[]>，所以获取方法都重载了<T>，默认获取仍然是string；
 
-3、SafeObjectPool 的引入使用；
+3、增加 geo 命令支持（需要 redis-server 3.2 以上支持）；
 
-4、增加 geo 命令支持（需要 redis-server 3.2 以上支持）；
+4、增加官方集群 redis-trib.rb 支持；
 
-5、增加官方集群 redis-trib.rb 支持；
+5、增加哨兵模式支持；
 
-6、增加哨兵模式支持；
+6、增加 stream 命令支持（需要 redis-server 5.0 以上支持）；
 
 | Package Name |  NuGet | Downloads | |
 |--------------|  ------- |  ---- | -- |
@@ -45,8 +45,9 @@ var csredis = new CSRedis.CSRedisClient("127.0.0.1:6379,password=123,defaultData
 | connectTimeout    | 5000  | 连接超时设置(毫秒) |
 | syncTimeout       | 10000 | 发送/接收超时设置(毫秒) |
 | idleTimeout       | 0     | 连接池内元素空闲时间(毫秒)，适用连接远程redis-server |
-| preheat           | true  | 预热连接 |
+| preheat           | true  | 预热连接，接收数值如 preheat=5 预热5个连接 |
 | ssl               | false | 是否开启加密传输 |
+| testcluster       | true  | 是否尝试集群模式，阿里云、腾讯云集群需要设置此选项为 false |
 | writeBuffer       | 10240 | 异步方法写入缓冲区大小(字节) |
 | tryit             | 0     | 执行命令出错，尝试重试的次数 |
 | name              | <空>  | 连接名称，可以使用 Client List 命令查看 |
@@ -113,7 +114,7 @@ RedisHelper.Get("test1");
 ```csharp
 var connectionString = "127.0.0.1:6379,password=123,poolsize=10";
 var redis = new CSRedisClient[14]; //定义成单例
-for (var a = 0; a< redis.Length; a++) redis[a] = new CSRedisClient(connectionString + ",defualtDatabase=" + a);
+for (var a = 0; a< redis.Length; a++) redis[a] = new CSRedisClient(connectionString + ",defaultDatabase=" + a);
 
 //访问数据库1的数据
 redis[1].Get("test1");
